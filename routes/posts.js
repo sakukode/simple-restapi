@@ -39,7 +39,7 @@ router.get('/', async function(req, res, next) {
  */
 router.get('/:id', async function(req, res, next) {
 	try {			
-		//mengangkap param ID
+		//menangkap param ID
 		const id = req.params.id;
 		const post = await models.posts.findByPk(id);		
 
@@ -67,8 +67,36 @@ router.get('/:id', async function(req, res, next) {
 /**
  * Route untuk membuat artikel baru
  */
-router.post('/', function(req, res, next) {
-	  
+router.post('/', async function(req, res, next) {
+  try {
+    //menangkap form data yang dikirim melalu request body
+    const {
+      title,
+      content,
+      tags,
+      published
+    } = req.body;
+    //membuat data baru di db menggunakan method create
+    const post = await models.posts.create({
+      title,
+      content,
+      tags,
+      published
+    });
+    //jika data berhasil dibuat, kembalikan response dengan kode 201 dan status OK
+    if (post) {
+      res.status(201).json({
+        'status': 'OK',
+        'messages': 'Post berhasil ditambahkan',
+        'data': post
+      })
+    }
+  } catch(err) {
+    res.status(400).json({
+      'status': 'ERROR',
+      'messages': err.message
+    })
+  }
 });
 
 /**
