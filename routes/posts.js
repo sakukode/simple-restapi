@@ -91,7 +91,7 @@ router.post('/', async function(req, res, next) {
         'data': post
       })
     }
-  } catch(err) {
+  } catch(err) {  	
     res.status(400).json({
       'status': 'ERROR',
       'messages': err.message
@@ -102,8 +102,40 @@ router.post('/', async function(req, res, next) {
 /**
  * Route untuk mengupdate artikel berdasarkan ID
  */
-router.put('/:id', function(req, res, next) {
-	  
+router.put('/:id', async function(req, res, next) {
+  try {
+  	const id = req.params.id
+    const {
+    	title,
+    	content,
+    	tags,
+    	published
+    } = req.body
+
+    const post = await models.posts.update({
+    	title,
+    	content,
+    	tags,
+    	published
+    }, {
+    	where: {
+    		id: id
+    	}
+    })
+
+    if (post) {
+    	res.json({
+    		'status': 'OK',
+    		'messages': 'Post Berhasil diubah',    		
+    	})
+    }
+
+  } catch(err) {
+    res.status(400).json({
+    	'status': 'ERROR',
+    	'messages': err.message
+    })
+  }
 });
 
 /**
