@@ -141,8 +141,27 @@ router.put('/:id', async function(req, res, next) {
 /**
  * Route untuk menghapus artikel berdasarkan ID
  */
-router.delete('/:id', function(req, res, next) {
-	  
+router.delete('/:id', async function(req, res, next) {
+  try {
+    const id = req.params.id 
+    const post = await models.posts.destroy({
+      where: {
+        id: id
+      }
+    })
+
+    if (post) {
+      res.json({
+        'status': 'OK',
+        'messages': 'Post berhasil dihapus'
+      })
+    }
+  } catch(err) {
+    res.status(400).json({
+      'status': 'ERROR',
+      'messages': err.message
+    })
+  }
 });
 
 export default router;
